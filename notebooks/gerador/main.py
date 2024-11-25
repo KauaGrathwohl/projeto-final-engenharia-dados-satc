@@ -1,237 +1,204 @@
-from datetime import date, datetime 
-import psycopg2
-from psycopg2.extensions import cursor, connection
 from faker import Faker
-from env import *
-
-class Clientes:
-    cliente_id: int
-    nome: str
-    email: str
-    telefone: str
-    data_cadastro: date
-
-class produtos: 
-    produto_id: int 
-    nome_produto: str 
-    categoria: str 
-    preco_unitario: float 
-
-class categorias:
-    categoria_id: int
-    nome_categoria: str
-
-class pedidos:
-    pedido_id: int
-    cliente_id: int #FK clientes(cliente_id)
-    data_pedido: date
-    valor_total: float 
-
-class itens_pedido:
-    item_id: int 
-    pedido_id: int #FK pedidos(pedido_id)
-    produto_id: int #FK produtos(produto_id)
-    quantidade: int
-    preco_unitario: float
-
-class enderecos:
-    endereco_id: int
-    cliente_id: int #FK clientes(cliente_id)
-    rua: str
-    cidade: str
-    estado: str
-    cep: str
-
-class pagamentos:
-    pagamento_id: int
-    pedido_id: int #FK pedidos(pedido_id)
-    data_pagamento: date
-    metodo_pagamento: str
-    valor_pago: float
-
-class estoque:
-    produto_id: int #FK produtos(produto_id)
-    quantidade_em_estoque: int
+import random
 
 faker = Faker("pt_BR")
 
-def connect()-> (cursor, connection):
-    conn = psycopg2.connect(
-        database = PG_DB,
-        host = PG_HOST,
-        user = PG_USER,
-        password = PG_PASS,
-        port="5432"
-    )
-    cur: cursor = conn.cursor()
-    return cur, conn
+LINE_COUNT = 10000
+LINE_SEP = 1000
 
-def gerar_inserir_clientes():    
-    for y in range(100):
-        cur, conn = connect() 
-        clientes = []
-        try:
-            for x in range(100):
-                cliente = []
-                cliente.append(faker.name())
-                cliente.append(faker.email())
-                cliente.append(faker.cellphone_number().replace("+", "").replace(" ", "").replace("-", "")[:15])
-                cliente.append(faker.date())
-                clientes.append(cliente)
-            cur.executemany("""INSERT INTO clientes (nome, email, telefone, data_cadastro) VALUES (%s, %s, %s, %s)""", clientes)
-            conn.commit()
-            print("Dados inseridos com sucesso!")
-        except Exception as e:
-            print(f"Erro: {e}")
-        finally:
-            cur.close()
-            conn.close()
-
-def gerar_inserir_produtos(categorias):
-    nome_produto: str 
-    categoria: str 
-    preco_unitario: float 
-    for y in range(100):
-        cur, conn = connect() 
-        ps = []
-        try:
-            for x in range(100):
-                p = []
-                p.append(faker.bs()[:100])
-                p.append(categorias[x])
-                p.append(faker.random_float(min=1, max=10000, ndigits=2))
-                ps.append(p)
-            cur.executemany("""INSERT INTO produtos (nome, email, telefone, data_cadastro) VALUES (%s, %s, %s, %s)""", clientes)
-            conn.commit()
-            print("Dados inseridos com sucesso!")
-        except Exception as e:
-            print(f"Erro: {e}")
-        finally:
-            cur.close()
-            conn.close()
-
-def gerar_inserir_categorias():
-    pass
-
-def gerar_inserir_pedidos():
-    pass
-
-def gerar_inserir_itens_pedido():
-    pass
-
-def gerar_inserir_enderecos():
-    pass
-
-def gerar_inserir_pagamentos():
-    pass
-
-def gerar_inserir_estoque():
-    pass
-
-def gerar_sql_clientes():
-    with open('clientes.sql', 'w') as f:
+def clientes():
+    with open("dump.sql", "a") as f:
+        f.write(f"\n\n\n\n-------------CLIENTES-------------\n\n")
+        f.write("SET IDENTITY_INSERT clientes ON;")
         x = 1
-        while x < 1000:
-            texto = f"INSERT INTO clientes (cliente_id, nome, email, telefone, data_cadastro) VALUES\n"
-            for y in range(500):
-                tele = faker.cellphone_number().replace("+", "").replace(" ", "").replace("-", "")[:15]
-                texto = texto + f"({x}, '{faker.name()}', '{faker.email()}', '{tele}','{faker.date()}'),\n" 
-                x = x + 1
-            tele = faker.cellphone_number().replace("+", "").replace(" ", "").replace("-", "")[:15]
-            texto = texto + f"({x}, '{faker.name()}', '{faker.email()}', '{tele}','{faker.date()}');\n"
-            x = x + 1
+        while x < LINE_COUNT:
+            texto = "INSERT INTO clientes (cliente_id, nome, email, telefone, data_cadastro) VALUES\n"
+            for y in range(LINE_SEP):
+                if y != 0:
+                    texto += ",\n"
+                texto += "({}, '{}', '{}', '{}','{}')".format(
+                    x, 
+                    faker.name(), 
+                    faker.email(), 
+                    faker.cellphone_number().replace("+", "").replace(" ", "").replace("-", "")[:15], 
+                    faker.date()
+                ) 
+                x += 1
+            texto += ";\n"
             f.write(texto)
-    print("Dados salvos no arquivo")
+        f.write("SET IDENTITY_INSERT clientes OFF;")
+    print("OK")
 
-def gerar_produtos():
-    with open('produtos.sql', 'w') as f:
+def categorias():
+    with open("dump.sql", "a") as f:
+        f.write(f"\n\n\n\n-------------CATAGORIAS-------------\n\n")
+        f.write("SET IDENTITY_INSERT categorias ON;")
         x = 1
-        while x < 10000:
-            texto = f"INSERT INTO produtos (produto_id, categoria_id, nome_produto, preco_unitario) VALUES\n"
-            for y in range(1,600):
-                preco = faker.random_number(digits=5) + faker.random_int(min=0, max=99) / 100
-                texto = texto + f"({x}, {y}, '{faker.bs()}', {preco}),\n" 
-                x = x + 1
-            preco = faker.random_number(digits=5) + faker.random_int(min=0, max=99) / 100
-            texto = texto + f"({x}, {y}, '{faker.bs()}', {preco});\n" 
-            x = x + 1
+        while x < LINE_COUNT:
+            texto = "INSERT INTO categorias (categoria_id, nome_categoria) VALUES\n"
+            for y in range(LINE_SEP):
+                if y != 0:
+                    texto += ",\n"
+                texto += "({}, '{}')".format(
+                    x, faker.bs()[:50]
+                ) 
+                x += 1 
+            texto += ";\n"
             f.write(texto)
-    print("Dados salvos no arquivo")
+        f.write("SET IDENTITY_INSERT categorias OFF;")
+    print("OK")
 
-def gerar_categorias():
-    with open('categorias.sql', 'w') as f:
+def produtos():
+    with open("dump.sql", "a") as f:
+        f.write(f"\n\n\n\n-------------PRODUTOS-------------\n\n")
+        f.write("SET IDENTITY_INSERT produtos ON;")
         x = 1
-        while x < 1000:
-            texto = f"INSERT INTO categorias (categoria_id, nome_categoria) VALUES\n"
-            for _ in range(10):
-                texto = texto + f"({x}, '{faker.bs()[:50]}'),\n" 
-                x = x + 1
-            texto = texto + f"({x}, '{faker.bs()[:50]}');\n" 
-            x = x + 1
+        while x < LINE_COUNT:
+            texto = "INSERT INTO produtos (produto_id, categoria_id, nome_produto, preco_unitario) VALUES\n"
+            for y in range(LINE_SEP):
+                if y != 0:
+                    texto += ",\n"
+                texto += "({}, {}, '{}', {})".format(
+                    x, 
+                    faker.random_int(min=1, max=LINE_COUNT), 
+                    faker.bs(), 
+                    faker.random_number(digits=5) + faker.random_int(min=0, max=99) / 100
+                ) 
+                x += 1
+            texto +=  ";\n"
             f.write(texto)
-    print("Dados salvos no arquivo")
+        f.write("SET IDENTITY_INSERT produtos OFF;")
+    print("OK")
 
-def gerar_pedidos(): 
-    with open('pedidos.sql', 'w') as f:
+def pedidos(): 
+    with open("dump.sql", "a") as f:
+        f.write(f"\n\n\n\n-------------PEDIDOS-------------\n\n")
+        f.write("SET IDENTITY_INSERT pedidos ON;")
         x = 1
-        while x < 10000:
-            texto = f"INSERT INTO pedidos (pedido_id, cliente_id, data_pedido, valor_total) VALUES\n"
-            for _ in range(1000):
-                preco = faker.random_number(digits=5) + faker.random_int(min=0, max=99) / 100
-                texto = texto + f"({x}, {faker.random_int(min=1, max=700)}, '{faker.date()}', {preco}),\n" 
-                x = x + 1
-            preco = faker.random_number(digits=5) + faker.random_int(min=0, max=99) / 100
-            texto = texto + f"({x}, {faker.random_int(min=1, max=700)}, '{faker.date()}', {preco});\n" 
-            x = x + 1
+        while x < LINE_COUNT:
+            texto = "INSERT INTO pedidos (pedido_id, cliente_id, data_pedido, valor_total) VALUES\n"
+            for y in range(LINE_SEP):
+                if y != 0:
+                    texto += ",\n"
+                texto += "({}, {}, '{}', {})".format(
+                    x, 
+                    faker.random_int(min=1, max=LINE_COUNT),
+                    faker.date(),
+                    faker.random_number(digits=5) + faker.random_int(min=0, max=99) / 100
+                ) 
+                x += 1
+            ";\n" 
             f.write(texto)
-    print("Acabou")
+        f.write("SET IDENTITY_INSERT pedidos OFF;")
+    print("OK")
 
-def gerar_itens_pedido():
-    with open('clientes.sql', 'w') as f:
-        for _ in range(1000):
-            texto = f"INSERT INTO clientes (nome, email, telefone, data_cadastro) VALUES\n"
-            for x in range(10):
-                tele = faker.cellphone_number().replace("+", "").replace(" ", "").replace("-", "")[:15]
-                texto = texto + f"('{faker.name()}', '{faker.email()}', '{tele}','{faker.date()}'),\n" 
-            tele = faker.cellphone_number().replace("+", "").replace(" ", "").replace("-", "")[:15]
-            texto = texto + f"('{faker.name()}', '{faker.email()}', '{tele}','{faker.date()}');\n"
+def itens_pedido():
+    with open("dump.sql", "a") as f:
+        f.write(f"\n\n\n\n-------------ITENS-PEDIDOS-------------\n\n")
+        f.write("SET IDENTITY_INSERT itens_pedido ON;")
+        x = 1
+        while x < LINE_COUNT:
+            texto = "INSERT INTO itens_pedido (item_id, pedido_id, produto_id, quantidade, preco_unitario) VALUES\n"
+            for y in range(LINE_SEP):
+                if y != 0:
+                    texto += ",\n"
+                texto += "({}, {}, {}, {}, {})".format(
+                    x, 
+                    faker.random_int(min=1, max=LINE_COUNT),
+                    faker.random_int(min=1, max=LINE_COUNT),
+                    faker.random_int(min=-LINE_COUNT, max=LINE_COUNT),
+                    faker.random_number(digits=5) + faker.random_int(min=0, max=99) / 100
+                )
+                x += 1
+            texto += ";\n"
             f.write(texto)
-    print("Dados salvos no arquivo 'dados_faker.txt'")
+        f.write("SET IDENTITY_INSERT itens_pedido OFF;")
+    print("OK")
 
-def gerar_enderecos():
-    with open('clientes.sql', 'w') as f:
-        for _ in range(1000):
-            texto = f"INSERT INTO clientes (nome, email, telefone, data_cadastro) VALUES\n"
-            for x in range(10):
-                tele = faker.cellphone_number().replace("+", "").replace(" ", "").replace("-", "")[:15]
-                texto = texto + f"('{faker.name()}', '{faker.email()}', '{tele}','{faker.date()}'),\n" 
-            tele = faker.cellphone_number().replace("+", "").replace(" ", "").replace("-", "")[:15]
-            texto = texto + f"('{faker.name()}', '{faker.email()}', '{tele}','{faker.date()}');\n"
+def enderecos():
+    with open("dump.sql", "a") as f:
+        f.write(f"\n\n\n\n-------------ENDERECOS-------------\n\n")
+        f.write("SET IDENTITY_INSERT enderecos ON;")
+        x = 1
+        while x < LINE_COUNT:
+            texto = "INSERT INTO enderecos (endereco_id, cliente_id, rua, cidade, estado, cep) VALUES\n"
+            for y in range(LINE_SEP):
+                if y != 0:
+                    texto += ",\n"
+                texto += "({}, {}, '{}', '{}', '{}', '{}')".format(
+                    x, 
+                    faker.random_int(min=1, max=LINE_COUNT),
+                    faker.street_address()[:255],
+                    faker.city()[:255],
+                    faker.state()[:255],
+                    faker.postcode()[:10]
+                )
+                x += 1 
+            texto += ";\n"
             f.write(texto)
-    print("Dados salvos no arquivo 'dados_faker.txt'")
+        f.write("SET IDENTITY_INSERT enderecos OFF;")
+    print("OK")
 
-def gerar_pagamentos():
-    with open('clientes.sql', 'w') as f:
-        for _ in range(1000):
-            texto = f"INSERT INTO clientes (nome, email, telefone, data_cadastro) VALUES\n"
-            for x in range(10):
-                tele = faker.cellphone_number().replace("+", "").replace(" ", "").replace("-", "")[:15]
-                texto = texto + f"('{faker.name()}', '{faker.email()}', '{tele}','{faker.date()}'),\n" 
-            tele = faker.cellphone_number().replace("+", "").replace(" ", "").replace("-", "")[:15]
-            texto = texto + f"('{faker.name()}', '{faker.email()}', '{tele}','{faker.date()}');\n"
+
+metodos_de_pagamentos = [
+    "Dinheiro em espécie",
+    "Cartão de crédito e débito",
+    "Boleto bancário",
+    "Transferência bancária",
+    "Pagamento por aproximação",
+    "Pagamentos pelo celular",
+    "Link de pagamento",
+    "Carteira digital",
+    "Pix",
+    "QR Code",
+]
+
+def pagamentos():
+    with open("dump.sql", "a") as f:
+        f.write("\n\n\n\n-------------PAGAMENTOS-------------\n\n")
+        f.write("SET IDENTITY_INSERT pagamentos ON;")
+        x = 1
+        while x < LINE_COUNT:
+            texto = "INSERT INTO pagamentos (pagamento_id, pedido_id, data_pagamento, metodo_pagamento, valor_pago) VALUES\n"
+            for y in range(LINE_SEP):
+                if y != 0:
+                    texto += ",\n"
+                texto += "({}, {}, '{}', '{}', {})".format(
+                    x, 
+                    faker.random_int(min=1, max=LINE_COUNT),
+                    faker.date(),
+                    random.choice(metodos_de_pagamentos),
+                    faker.random_number(digits=5) + faker.random_int(min=0, max=99) / 100,
+                )
+                x += 1
+            texto += ";\n"
             f.write(texto)
-    print("Dados salvos no arquivo 'dados_faker.txt'")
+        f.write("SET IDENTITY_INSERT pagamentos OFF;")
+    print("OK")
 
-def gerar_estoque():
-    with open('clientes.sql', 'w') as f:
-        for _ in range(1000):
-            texto = f"INSERT INTO clientes (nome, email, telefone, data_cadastro) VALUES\n"
-            for x in range(10):
-                tele = faker.cellphone_number().replace("+", "").replace(" ", "").replace("-", "")[:15]
-                texto = texto + f"('{faker.name()}', '{faker.email()}', '{tele}','{faker.date()}'),\n" 
-            tele = faker.cellphone_number().replace("+", "").replace(" ", "").replace("-", "")[:15]
-            texto = texto + f"('{faker.name()}', '{faker.email()}', '{tele}','{faker.date()}');\n"
+def estoque():
+    with open("dump.sql", "a") as f:
+        f.write(f"\n\n\n\n-------------ESTOQUE-------------\n\n")
+        x = 1
+        while x < LINE_COUNT:
+            texto = "INSERT INTO estoque (produto_id, quantidade_em_estoque) VALUES\n"
+            for y in range(LINE_SEP):
+                if y != 0:
+                    texto += ",\n"
+                texto += "({}, {})".format(
+                    x, 
+                    faker.random_int(min=1, max=LINE_COUNT)
+                )
+                x += 1
+            texto += ";\n"
             f.write(texto)
-    print("Dados salvos no arquivo 'dados_faker.txt'")
+    print("OK")
 
-
+clientes()
+categorias()
+produtos()
+pedidos()
+itens_pedido()
+enderecos()
+pagamentos()
+estoque()
