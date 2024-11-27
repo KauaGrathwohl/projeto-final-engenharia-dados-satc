@@ -1,42 +1,72 @@
-from sqlalchemy import create_engine
 import pandas as pd
-from minio import Minio
-import io
-from env import *
+from azure.identity import DefaultAzureCredential
+from azure.storage.filedatalake import DataLakeServiceClient
+from azure.core.exceptions import ResourceExistsError
+from urllib.parse import quote_plus
+from sqlalchemy import create_engine
 
-# Precisa da lib psycopg2
-def postgres():
-    db_connection_str = f'postgresql+psycopg2://{PG_USER}:{PG_PASS}@{PG_HOST}/{PG_DB}'
-    db_connection = create_engine(db_connection_str)
-    
-    df = pd.read_sql('SELECT * FROM clientes', con=db_connection)
-    data = df.to_csv(index=False).encode()
-    dataIo = io.BytesIO(data)
+import os
 
-    min = Minio(
-        endpoint = MIN_END, 
-        access_key = MIN_ACCESS, 
-        secret_key = MIN_SECRET, 
-        secure=False
+# ADLS_ACCOUNT_NAME
+account_name = "datalaked39ba291b2180f36"
+
+# ADLS_FILE_SYSTEM_NAME
+file_system_name = "landing-zone"
+
+# ADLS_DIRECTORY_NAME
+directory_name = "a"
+
+# ADLS_SAS_TOKEN
+sas_token = "sv=2022-11-02&ss=bfqt&srt=sco&sp=rwdlacupyx&se=2024-11-27T11:21:11Z&st=2024-11-27T03:21:11Z&spr=https&sig=1Eax4jC0KxtBGNdxnmLvUp5h4ii1z8xQn9Vpwt1%2BHH0%3D"
+
+# SQL_SERVER
+server = "sql-proud-lizard.database.windows.net"
+
+# SQL_DATABASE
+database = "SampleDB"
+
+# SQL_SCHEMA
+schema = "dbo"
+
+# SQL_USERNAME
+username = "azureadmin"
+
+# SQL_PASSWORD
+Password = "Satc@1234"
+
+def export_adls():
+    password = quote_plus(Password)
+    conn_str = f"mssql+pyodbc://{username}:{password}@{server}/{database}?driver=ODBC+Driver+18+for+SQL+Server" 
+    engine = create_engine(conn_str)
+    query = f"SELECT table_name FROM INFORMATION_SCHEMA.TABLES WHERE table_schema = '{schema}'"
+
+    file_system_client = DataLakeServiceClient(
+        account_url=f"https://{account_name}.dfs.core.windows.net", 
+        credential=sas_token,
+        api_version="2020-02-10"
     )
-    min.put_object(bucket_name="landing", object_name="teste.csv", data=dataIo, length=len(data))
 
-# precisa da lib mysqlconnector
-def mysql():
-    db_connection_str = 'mysql+mysqlconnector://eng:eng@localhost/sakila'
-    db_connection = create_engine(db_connection_str)
-    
-    df = pd.read_sql('SELECT * FROM teste', con=db_connection)
-    data = df.to_csv(index=False).encode()
-    dataIo = io.BytesIO(data)
+    # Tentar criar o diretório, se não existir
+    try:
+        directory_client = file_system_client.get_file_system_client(file_system_name).get_directory_client(directory_name)
+        directory_client.create_directory()
+    except ResourceExistsError:
+        print(f"O diretório '{directory_name}' já existe.")
 
-    min = Minio(
-        endpoint="localhost:9000", 
-        access_key="ck2aQGzAUXljukN91six", 
-        secret_key="LSU8ElP7KNLwDMnQBdV7PYFF8fP3RoTMQEYWP7u4", 
-        secure=False
-    )
+    # Executar a consulta para obter todas as tabelas do esquema
+    tables_df = pd.read_sql(query, engine)
 
-    min.put_object(bucket_name="teste", object_name="teste.csv", data=dataIo, length=len(data))
-    print(df)
-    print(f"Total Buckets: ", len(min.list_buckets()))
+    # Para cada tabela encontrada, ler os dados e carregar para o Azure Data Lake Storage
+    for index, row in tables_df.iterrows():
+        table_name = row["table_name"]
+        query = f"SELECT * FROM {schema}.{table_name}"
+        df = pd.read_sql(query, conn_str)
+        
+        # Carregar os dados para o Azure Data Lake Storage
+        file_client = directory_client.get_file_client(f"{table_name}.csv")
+        data = df.to_csv(index=False).encode()
+        file_client.upload_data(data, overwrite=True)
+        print(f"Dados da tabela '{table_name}' carregados com sucesso.")
+
+if __name__ == '__main__':
+    export_adls()
