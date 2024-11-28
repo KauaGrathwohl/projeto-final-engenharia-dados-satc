@@ -26,7 +26,7 @@ resource "azurerm_storage_account" "storage" {
 
 # Criar quatro containers dentro do Azure Data Lake Storage Gen2: Landing-zone, Bronze, Silver e Gold
 resource "azurerm_storage_container" "landing-zone" {
-  name                  = "landing-zone"
+  name                  = "landing"
   storage_account_id    = azurerm_storage_account.storage.id
   container_access_type = "private"
 }
