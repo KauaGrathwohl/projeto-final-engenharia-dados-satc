@@ -1,0 +1,13 @@
+site_name: "Projeto Final Engenharia de Dados SATC"
+theme:
+  name: ivory
+  palette:
+    primary: 'indigo'
+    accent: 'indigo'
+  font:
+    text: 'Roboto'
+    code: 'Roboto Mono'
+nav:
+  - Home: index.md
+  - Projeto: projeto.md
+  - Pipeline: pipeline.md
