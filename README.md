@@ -8,7 +8,7 @@ Este documento descreve o projeto final da matéria de Engenharia de Dados na fa
 
 ### Desenho de Arquitetura
 
-
+![Desenho Arquitetura](./desenho_arquitetura.png)
 
 ### Pré-requisitos
 * [Python 3.12.6](https://www.python.org/downloads/release/python-3126/)
