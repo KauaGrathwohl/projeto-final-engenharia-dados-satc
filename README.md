@@ -1,102 +1,72 @@
-# projeto-final-engenharia-dados-satc
-
-Projeto final da matéria de Engenharia de Dados, com o objetivo de criar uma nova pipeline de Dados.
+## Projeto final de Engenharia de Dados - SATC
 
 
-# Util
-## Instalando o docker
-https://medium.com/@selvamraju007/how-to-install-docker-desktop-on-ubuntu-22-04-1ebe4b2f8a14
+### Introdução
 
-## Instalando o python 
-adicionar as dependecias    
-`sudo apt-get install`
-```
-make 
-build-essential 
-libssl-dev 
-zlib1g-dev
-libbz2-dev 
-libreadline-dev 
-libsqlite3-dev 
-wget
-curl
-llvm
-libncurses5-dev
-libncursesw5-dev
-xz-utils
-tk-dev
-libffi-dev
-liblzma-dev
-```
-
-usar esses tutoriais    
-https://realpython.com/intro-to-pyenv/#installing-pyenv     
-https://github.com/pyenv/pyenv-installer        
+Este documento descreve o projeto final da matéria de Engenharia de Dados na faculdade UniSatc.
 
 
-```
-pyenv install 3.13.0
-```
+### Desenho de Arquitetura
+
+
+
+### Pré-requisitos
+
+
+
+### Instalação
+
+
+
+### Implantação
+
+
+
+### Ferramentas utilizadas
+
+- Databricks - https://www.databricks.com/br - Plataforma utilizada para a criação do Workflow do projeto
+- MkDocs - https://www.mkdocs.org/ - Ferramenta utilizada para a criação da documentação
+- Azure - https://azure.microsoft.com/pt-br/get-started/azure-portal/ - Ferramenta utilizada para a criação do ambiente de nuvem
+- Python - https://www.python.org/doc/ - Linguagem de programação utilizada para o desenvolvimento dos scripts
+- PySpark - https://spark.apache.org/docs/latest/api/python/index.html - Biblioteca de processamento de dados distribuídos
+- SQL Server - https://www.microsoft.com/pt-br/sql-server/sql-server-downloads - Banco de dados relacional utilizado para armazenamento dos dados
+
+
+#### **Estrutura do Projeto**
 
 ```
-sudo apt update
-sudo apt install pipx
-pipx ensurepath
+  css
+  data
+  docs
+  iac
+  notebooks
+  powerbi
+  gitignore
+  LICENSE.md
+  README.md
+  requirements.txt
 ```
 
-```
-pipx install poetry
-```
+
+### Versão
 
 
-# 1. Extração de dados
-## 1.1. Criando um ambiente simulado de banco de dados relacional
-### 1.1.1 Inciando com um banco relacional
-Com o docker Instalado rode os comandos 
-```
-docker pull mysql:latest
-```
+### Autores
 
-```
-docker run  -p 3306:3306 --name mysql1 -e MYSQL_ROOT_PASSWORD=1234 -d mysql:latest
-```
+- Kauã Machado Grathwohl - [linkParaPerfil](https://github.com/KauaGrathwohl)
+- Thiago Larangeira De Souza - [linkParaPerfil](https://github.com/thiagolarangeiras)
+- Felipe Milaneze de Aguiar - [linkParaPerfil](https://github.com/phillCD)
 
-```
-docker exec -it mysql1 bash
-```
 
-```
-mysql -u root -p
-```
+### Licença
 
-```
-CREATE USER 'eng'@'%' IDENTIFIED BY 'eng';
+Este projeto está sob a licença (sua licença) - veja o arquivo `LICENSE` para detalhes.
 
-GRANT ALL PRIVILEGES ON *.* TO 'eng'@'%' WITH GRANT OPTION;
 
-FLUSH PRIVILEGES;
-```
-### 1.1.2 Inserindo dados ao banco relacional     
-* Baixar a versão free/comunity do dbeaver em: https://dbeaver.io/download/
+### Referências
 
-* Conectar como mysql usando os dados:  
-
-        Porta: localhost:3306  
-        Usuario: eng    
-        Senha: eng  
-        Database: sys       
-    
-    Trocar a propriedade do driver: alowPublicKeyRetrival para TRUE, caso de algum erro de conexão
-
-* Usando o executador de scripts do dbeaver que pode ser acessado clicando com o botão direito sobre uma database rodar os seguintes arquivos nessa ordem:
-    ```
-    ./data/sakila-chemas.sql
-
-    ./dados/sakila-data.sql
-    ```
-` Com isso voce dever ter um sistema relacional funcional em mysql ` 
-
-## 1.2. Extraindo os dados do sistema 
-
-docker run -d -p 9000:9000 -p 9001:9001 quay.io/minio/minio server /data --console-address ":9001"
-
+- [Referência 1](https://www.python.org/doc/)
+- [Referência 2](https://learn.microsoft.com/en-us/azure/)
+- [Referência 3](https://docs.databricks.com/en/index.html)
+- [Referência 4](https://www.mkdocs.org/)
+- [Referência 5](https://spark.apache.org/docs/latest/api/python/index.html)

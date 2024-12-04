@@ -13,7 +13,7 @@ Este projeto tem como objetivo aplicar os conhecimentos adquiridos ao longo da m
 
 <div style="border: 1px solid #ccc; padding: 10px; margin: 10px 0;">
 - Kauã Machado Grathwohl <br><br>
-- Thiago Laranjeira De Souza <br><br>
+- Thiago Larangeira De Souza <br><br>
 - Felipe Milaneze de Aguiar
 </div>
 

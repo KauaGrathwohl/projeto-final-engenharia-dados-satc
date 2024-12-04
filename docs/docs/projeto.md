@@ -24,6 +24,7 @@
   notebooks
   powerbi
   gitignore
+  LICENSE.md
   README.md
   requirements.txt
 ```
