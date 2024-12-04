@@ -192,4 +192,83 @@ from datetime import datetime
 from pyspark.sql.functions import lit
 
 def gold():
-    pass
+    def gold():
+    try:
+        # Recuperar dados da camada Silver
+        df_clientes     = spark.read.format('delta').load(f"/mnt/{storageAccountName}/silver/clientes")
+        df_pedidos      = spark.read.format('delta').load(f"/mnt/{storageAccountName}/silver/pedidos")
+        df_itens_pedido = spark.read.format('delta').load(f"/mnt/{storageAccountName}/silver/itens_pedido")
+        df_produtos     = spark.read.format('delta').load(f"/mnt/{storageAccountName}/silver/produtos")
+        df_categorias   = spark.read.format('delta').load(f"/mnt/{storageAccountName}/silver/categorias")
+        df_pagamentos   = spark.read.format('delta').load(f"/mnt/{storageAccountName}/silver/pagamentos")
+        df_enderecos    = spark.read.format('delta').load(f"/mnt/{storageAccountName}/silver/enderecos")
+    except Exception as e:
+        print("Erro ao carregar dados da camada Silver")
+        raise e
+        return
+
+    # Criar Dimensão Clientes
+    try:
+        df_dim_clientes = df_clientes.join(
+            df_enderecos,
+            df_clientes["ID"] == df_enderecos["ID_CLIENTE"],
+            "left"
+        ).select(
+            df_clientes["ID"].alias("CLIENTE_ID"),
+            df_clientes["NOME"],
+            df_clientes["EMAIL"],
+            df_clientes["TELEFONE"],
+            df_clientes["DATA_CADASTRO"],
+            df_enderecos["RUA"],
+            df_enderecos["CIDADE"],
+            df_enderecos["ESTADO"],
+            df_enderecos["CEP"]
+        )
+        
+        df_dim_clientes.write.format('delta').mode("overwrite").save(f"/mnt/{storageAccountName}/gold/dim_clientes")
+    except Exception as e:
+        print("Erro ao criar Dimensão Clientes")
+        raise e
+        return
+
+    # Criar Fato Vendas
+    try:
+        # Relacionar tabelas de pedidos, itens de pedido, produtos e categorias
+        df_fato_vendas = df_pedidos.join(
+            df_itens_pedido,
+            df_pedidos["ID"] == df_itens_pedido["ID_PEDIDO"],
+            "inner"
+        ).join(
+            df_produtos,
+            df_itens_pedido["ID_PRODUTO"] == df_produtos["ID"],
+            "inner"
+        ).join(
+            df_categorias,
+            df_produtos["ID_CATEGORIA"] == df_categorias["ID"],
+            "left"
+        ).join(
+            df_pagamentos,
+            df_pedidos["ID"] == df_pagamentos["ID_PEDIDO"],
+            "left"
+        ).select(
+            df_pedidos["ID"].alias("PEDIDO_ID"),
+            df_pedidos["DATA_PEDIDO"],
+            df_pedidos["ID_CLIENTE"],
+            df_itens_pedido["ID_PRODUTO"],
+            df_produtos["NOME"].alias("PRODUTO_NOME"),
+            df_categorias["NOME"].alias("CATEGORIA"),
+            df_itens_pedido["QUANTIDADE"],
+            df_itens_pedido["PRECO_UNITARIO"],
+            (df_itens_pedido["QUANTIDADE"] * df_itens_pedido["PRECO_UNITARIO"]).alias("VALOR_TOTAL_ITEM"),
+            df_pagamentos["METODO_PAGAMENTO"],
+            df_pagamentos["VALOR_PAGO"]
+        )
+
+        df_fato_vendas.write.format('delta').mode("overwrite").save(f"/mnt/{storageAccountName}/gold/fato_vendas")
+    except Exception as e:
+        print("Erro ao criar Fato Vendas")
+        raise e
+        return
+
+    print("Camada Gold criada com sucesso!")
+
