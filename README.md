@@ -1,8 +1,10 @@
 # Projeto final de Engenharia de Dados - SATC
 
 # Introdução
-
 Projeto com o objetivo da construção de uma simulação de uma pipeline de dados utilizando o modelo de arquitetura Medalhão (Medallion Architecture). Visando garantir a eficiência no processamento de grandes volumes de dados, proporcionando uma estrutura escalável, flexível e otimizada para consumo analítico e tomada de decisão.
+
+[Documentação](https://kauagrathwohl.github.io/projeto-final-engenharia-dados-satc)
+
 
 # Desenho de Arquitetura
 
@@ -204,7 +206,7 @@ terrafrom destroy
 # Autores
 * Kauã Machado Grathwohl - [linkParaPerfil](https://github.com/KauaGrathwohl)
 * Thiago Larangeira De Souza - [linkParaPerfil](https://github.com/thiagolarangeiras)
-* Felipe Milaneze de Aguiar - [linkParaPerfil](https://github.com/phillCD)
+* Filipe Milaneze de Aguiar - [linkParaPerfil](https://github.com/phillCD)
 
 # Licença
 Este projeto está sob a licença MIT - veja o arquivo [`LICENSE`](./LICENSE.md) para detalhes.
