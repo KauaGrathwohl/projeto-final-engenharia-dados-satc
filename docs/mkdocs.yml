@@ -10,4 +10,7 @@ theme:
 nav:
   - Home: index.md
   - Projeto: projeto.md
+  - Configuração: configuracao.md
   - Pipeline: pipeline.md
+  #- Passo a Passo: step.md
+  

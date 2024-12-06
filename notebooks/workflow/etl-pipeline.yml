@@ -1,0 +1,34 @@
+resources:
+  jobs:
+    ETL_pipeline:
+      name: ETL-pipeline
+      timeout_seconds: 600
+      tasks:
+        - task_key: landing
+          notebook_task:
+            notebook_path: /Workspace/Users/useall.thiago@outlook.com/1-landing
+            source: WORKSPACE
+          existing_cluster_id: 1129-115630-8p4lzu42
+        - task_key: bronze
+          depends_on:
+            - task_key: landing
+          notebook_task:
+            notebook_path: /Workspace/Users/useall.thiago@outlook.com/2-bronze
+            source: WORKSPACE
+          existing_cluster_id: 1129-115630-8p4lzu42
+        - task_key: silver
+          depends_on:
+            - task_key: bronze
+          notebook_task:
+            notebook_path: /Workspace/Users/useall.thiago@outlook.com/3-silver
+            source: WORKSPACE
+          existing_cluster_id: 1129-115630-8p4lzu42
+        - task_key: gold
+          depends_on:
+            - task_key: silver
+          notebook_task:
+            notebook_path: /Workspace/Users/useall.thiago@outlook.com/4-gold
+            source: WORKSPACE
+          existing_cluster_id: 1129-115630-8p4lzu42
+      queue:
+        enabled: true

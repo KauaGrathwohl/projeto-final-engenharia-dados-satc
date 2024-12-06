@@ -124,13 +124,18 @@ terrafrom destroy
 
 # Implantação
 ## SQL Server
+* Navegar até o recurso SQL Server e pegar os valores de:   
+  Administrador do servidor   
+  Senha (redefinir caso nem lembre)   
+  Nome do servidor  
 
 ## ADLS
+* Navegar até o recurso Conta de armazenamento e pegar os valores de:     
+  Nome da conta de Armazenamento  
+  Segurança + rede / Assinatura de acesso compartilhado / Gerar uma chave com todas as permições de tipo de recurso
 
 ## Databricks
-
-## Dashboard
-
+* Navegar até o recurso Serviço do Azure Databricks e clicar em iniciar o Workspace
 
 # Ferramentas utilizadas
 * Databricks - https://www.databricks.com/br - Plataforma utilizada para a criação do Workflow do projeto
