@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="shortcut icon" href="../img/favicon.ico">
+    <title>Configuração &mdash; Projeto Final Engenharia de Dados</title>
+    <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Lato:400,700">
+    <link rel="stylesheet" href="//cdn.jsdelivr.net/gh/tonsky/FiraCode@1.206/distr/fira_code.css">
+    <link rel="stylesheet" href="//use.fontawesome.com/releases/v5.8.1/css/all.css">
+    <link rel="stylesheet" href="//use.fontawesome.com/releases/v5.8.1/css/v4-shims.css">
+    <link rel="stylesheet" href="../css/theme.css">
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/github.min.css">
+    <script src="//code.jquery.com/jquery-2.1.1.min.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
+    <script>
+        hljs.initHighlightingOnLoad();
+    </script> 
+</head>
+
+<body ontouchstart="">
+    <div id="container">
+        <aside>
+            <div class="home">
+                <div class="title">
+                    <button class="hamburger"></button>
+                    <a href=".." class="site-name"> Projeto Final Engenharia de Dados</a>
+                </div>
+                <div class="search">
+                    <div role="search">
+    <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+        <input type="text" name="q" placeholder="Search docs" title="Type search term here" />
+    </form>
+</div>
+                </div>
+            </div>
+            <nav class="nav">
+                <ul class="root">
+                    <li class="toctree-l1"><a class="nav-item" href="..">Home</a></li>
+                    <li class="toctree-l1"><a class="nav-item" href="../projeto/">Projeto</a></li>
+                    <li class="toctree-l1 current"><a class="nav-item current" href="./">Configuração</a>
+<ul class="subnav">
+<li class="toctree-l2"><a class="nav-item toc" href="#conta-azure">Conta Azure</a></li>
+<li class="toctree-l2"><a class="nav-item toc" href="#inciando-os-servicos-azure">Inciando os serviços Azure</a></li>
+<li class="toctree-l2"><a class="nav-item toc" href="#configuracoes-do-mkdocs">Configurações do MKDOCS</a></li>
+<li class="toctree-l2"><a class="nav-item toc" href="#configuracoes-do-gerador-de-dados">Configurações do Gerador de dados</a></li>
+</ul></li>
+                    <li class="toctree-l1"><a class="nav-item" href="../pipeline/">Pipeline</a></li>
+                </ul>
+            </nav>
+            <div class="repo">
+    <div class="previous"><a href="../projeto/">&laquo; Previous</a></div>
+    <div class="next"><a href="../pipeline/">Next &raquo;</a></div>
+</div>
+        </aside>
+        <div id="spacer"><button class="arrow"></button></div>
+        <main>
+            <div class="home-top">
+                <button class="hamburger"></button>
+                <a href=".." class="site-name"> Projeto Final Engenharia de Dados</a>
+            </div>
+            <div id="main">
+                <nav class="breadcrumbs">
+<ul>
+    
+</ul>
+</nav>
+                <div id="content"><h1 id="configuracoes"><span style="color: #48c;">Configurações</span></h1>
+<h2 id="conta-azure"><span style="color: #48c;">Conta Azure</span></h2>
+<p>Todo o projeto depende da Azure então voce deve ter acesso a uma conta seja a gratuita ou paga.   <br />
+Para Criar uma conta se dirija ao <a href="https://azure.microsoft.com/pt-br/">Site Oficial da Azure</a> e clique em criar uma conta ou comece a usar.</p>
+<p>Você tambem ira precisar baixar o <a href="https://learn.microsoft.com/en-us/cli/azure/install-azure-cli">CLI do azure</a></p>
+<h3 id="logando-no-azure-cli">Logando no Azure CLI</h3>
+<p><strong>Rodar esse comando para logar</strong></p>
+<pre><code>az login
+</code></pre>
+<p><strong>Listar dados da conta e do resource group, os dados aqui seram usados posteriormente</strong></p>
+<pre><code>az account show -o table
+az group list -o table
+</code></pre>
+<h2 id="inciando-os-servicos-azure"><span style="color: #48c;">Inciando os serviços Azure</span></h2>
+<h3 id="1-sgdb-sql-server-mmsql-na-azure">1. SGDB SQL Server (MMSQL) na Azure</h3>
+<p><strong>Navegar até <a href="./iac/sqlserver">iac/sqlserver</a></strong>   <br />
+<strong>Alterar os valores das variaveis no arquivo <a href="./iac/sqlserver/variables.tf">variables.tf</a></strong>    </p>
+<pre><code>variable &quot;resource_group_name&quot; {
+    ...
+    default = &quot;Inserir Aqui o nom do seu resource group&quot;
+}
+</code></pre>
+<p><strong>Rodar os comandos do terraform para subir uma instacia do SQL server no seu azure</strong></p>
+<pre><code class="language-sh">terrafrom init 
+terraform apply
+</code></pre>
+<p><strong>Assim o seu sql sever vai estar configurado, caso precise deletar ele rodar:</strong></p>
+<pre><code class="language-sh">terrafrom destroy
+</code></pre>
+<h3 id="2-azure-adls2">2. Azure ADLS2</h3>
+<p><strong>Navegar até <a href="./iac/adls">./iac/adls</a></strong>   <br />
+<strong>Alterar os valores das variaveis no arquivo <a href="./iac/adls/variables.tf">variables.tf</a></strong></p>
+<pre><code>variable &quot;subscription_id&quot; {
+  ...
+  default = &quot;alterar pelo seu subscription id&quot;
+}
+</code></pre>
+<p><strong>Rodar os comandos do terraform para subir uma instacia do ADLS2 no seu azure</strong></p>
+<pre><code>terrafrom init 
+terraform apply
+</code></pre>
+<p><strong>Assim o seu ADLS2 vai estar configurado, caso precise deletar ele rodar:</strong></p>
+<pre><code>terrafrom destroy
+</code></pre>
+<h3 id="3-databricks-na-azure">3. Databricks na Azure</h3>
+<p><strong>Navegar até <a href="./iac/databricks">./iac/databricks</a></strong>  <br />
+<strong>Alterar os valores das variaveis no arquivo <a href="./iac/databricks/variables.tf">variables.tf</a></strong></p>
+<pre><code>variable &quot;azure_client_id&quot; {
+  ...
+  default = &quot;alterar pelo seu azure client id&quot;
+}
+
+variable &quot;azure_client_secret&quot; {
+  ...
+  default = &quot;alterar pelo seu azure client secret&quot;
+}
+
+variable &quot;azure_tenant_id&quot; {
+  ...
+  default = &quot;alterar pelo seu azure tenant id&quot;
+}
+
+variable &quot;subscription_id&quot; {
+  ...
+  default = &quot;alterar pelo seu subscription id&quot;
+}
+</code></pre>
+<p><strong>Rodar os comandos do terraform para subir uma instacia do databrick no seu azure</strong></p>
+<pre><code>terrafrom init 
+terraform apply
+</code></pre>
+<p><strong>Assim o seu databricks vai estar configurado, caso precise deletar ele rodar:</strong></p>
+<pre><code>terrafrom destroy
+</code></pre>
+<h2 id="configuracoes-do-mkdocs"><span style="color: #48c;">Configurações do MKDOCS</span></h2>
+<p><strong>1. Instalar as libs do mkdocs</strong></p>
+<pre><code>pip install mkdocs 
+pip install mkdocs-ivory
+</code></pre>
+<p><strong>2. Entrar na pasta <code>/docs</code></strong></p>
+<p><strong>3. Rodar localmente</strong></p>
+<pre><code class="language-sh">mkdocs serve
+</code></pre>
+<p><strong>4. Build em uma pasta</strong></p>
+<pre><code class="language-sh">mkdocs build
+</code></pre>
+<p><strong>5. Deploy para o github</strong>
+Ele é criado na branch <code>gh-pages</code></p>
+<pre><code class="language-sh">mkdocs gh-deploy
+</code></pre>
+<h2 id="configuracoes-do-gerador-de-dados"><span style="color: #48c;">Configurações do Gerador de dados</span></h2>
+<p><strong>Na pasta <code>notebooks/gerador</code> rodar os comandos</strong></p>
+<pre><code>pip install -r requirements.txt
+</code></pre>
+<p><strong>Executar o script</strong></p>
+<pre><code>python gerador.py
+</code></pre></div>
+                <footer>
+    <div class="footer-buttons">
+        <div class="previous"><a href="../projeto/" title="Projeto"><span>Previous</span></a></div>
+        <div class="next"><a href="../pipeline/" title="Pipeline"><span>Next</span></a></div>
+    </div>
+    <div class="footer-note">
+        <p>
+            Built with <a href="http://www.mkdocs.org">MkDocs</a> using
+            <a href="https://github.com/daizutabi/mkdocs-ivory">Ivory theme</a>.
+        </p>
+    </div>
+</footer>
+            </div>
+        </main>
+    </div>
+    <script>var base_url = '..';</script>
+    <script src="../js/theme.js"></script>
+    <script src="../search/main.js"></script>
+</body>
+
+</html>
