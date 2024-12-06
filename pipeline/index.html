@@ -69,58 +69,58 @@
 </nav>
                 <div id="content"><h2 id="pipeline-de-dados"><span style="color: #48c;"><strong>Pipeline de Dados</strong></span></h2>
 <h3 id="introducao"><strong>Introdução</strong></h3>
-<p>Uma pipeline de dados é um conjunto de processos que extrai, transforma e carrega dados de várias fontes para um destino final. Este documento descreve a criação de uma pipeline de dados robusta, incluindo o tratamento das camadas landing, bronze, silver e gold, e a organização do workflow via Databricks. <br><br></p>
+<p>Uma pipeline de dados é um conjunto de processos que extrai, transforma e carrega dados de várias fontes para um destino final. Este documento descreve a criação de uma pipeline de dados robusta, incluindo o tratamento das camadas landing, bronze, silver e gold, e a organização do workflow via Databricks.</p>
 <h3 id="criacao-da-pipeline-de-dados"><span style="color: #48c;"><strong>Criação da Pipeline de Dados</strong></span></h3>
 <h4 id="1-extracao-de-dados"><strong>1. Extração de Dados</strong></h4>
 <p>A extração de dados é o primeiro passo na pipeline de dados. Os dados podem ser extraídos de várias fontes. Em nosso projeto ele é extraído de um banco sequencial (SQL Server), e logo após, cada tabela é transformada em arquivos CSV.</p>
 <h4 id="2-transformacao-de-dados"><strong>2. Transformação de Dados</strong></h4>
-<p>A transformação de dados envolve aplicar tratamentos e transformações aos dados originais, e salvá-los em formatos de dados Delta Tables<br><br></p>
+<p>A transformação de dados envolve aplicar tratamentos e transformações aos dados originais, e salvá-los em formatos de dados Delta Tables.</p>
 <h3 id="tratamento-das-camadas"><span style="color: #48c;"><strong>Tratamento das Camadas</strong></span></h3>
 <h4 id="1-camada-landing"><strong>1. Camada Landing</strong></h4>
 <p>A camada landing é onde os dados brutos são inicialmente armazenados após a extração. Esta camada serve como um ponto de entrada para os dados na pipeline.</p>
 <p>Para essa camada são acessados os dados do banco de dados sequencial (SQL Server) hospenada na Azure e extrai os dados de cada tabela em csv para um container blob storage de nome landing no Azure ADLS2 seguindo as etapas:</p>
 <ol>
-<li><strong>Conectar no SQL server</strong>  </li>
-<li><strong>Realizar um query para saber quantas tabelas existem no database</strong>    </li>
-<li><strong>Para cada tabela recuperar os seus conteudos e salvar em csv na camada landing</strong>  </li>
+<li><strong>Conectar no SQL server</strong></li>
+<li><strong>Realizar um query para saber quantas tabelas existem no database</strong></li>
+<li><strong>Para cada tabela recuperar os seus conteudos e salvar em csv na camada landing</strong></li>
 <li><strong><a href="https://github.com/KauaGrathwohl/projeto-final-engenharia-dados-satc/blob/master/notebooks/camadas/1-landing.ipynb">Código para referência</a></strong></li>
 </ol>
 <h4 id="2-camada-bronze"><strong>2. Camada Bronze</strong></h4>
 <p>A camada bronze é onde os dados brutos são armazenados após uma limpeza inicial. Esta camada é usada para armazenar dados que ainda precisam de processamento adicional.</p>
 <p>Nela Recuperamos os dados salvos na camada landing em csv adicionamos metadados de processamento como data e nome de arquivo original caso tenha necessidade posteriormente e salvamos os dados na camada Bronze usando o formato delta table:</p>
 <ol>
-<li><strong>Recuperar os dados da landing</strong>       </li>
-<li><strong>Adicionar dados extras e metadados</strong>      </li>
-<li><strong>Salvar na camada Bronze em formato delta table</strong>  </li>
+<li><strong>Recuperar os dados da landing</strong></li>
+<li><strong>Adicionar dados extras e metadados</strong></li>
+<li><strong>Salvar na camada Bronze em formato delta table</strong></li>
 <li><strong><a href="https://github.com/KauaGrathwohl/projeto-final-engenharia-dados-satc/blob/master/notebooks/camadas/2-bronze.ipynb">Código para referência</a></strong></li>
 </ol>
 <h4 id="3-camada-silver"><strong>3. Camada Silver</strong></h4>
 <p>A camada silver é onde os dados são transformados e enriquecidos. Esta camada é usada para armazenar dados que estão prontos para análise.</p>
 <p>Nela ajustamos os dados pra qualquer trabalho futuro, ajustando incoerencias e definindo a melhor estrutura para todo os dados</p>
 <ol>
-<li><strong>Recuperar dados da bronze</strong>        </li>
-<li><strong>Adicionar dados extras e metadados</strong>       </li>
-<li><strong>Ajustar estrutura, campos, nomes, da tebala e colunas</strong>    </li>
-<li><strong>Salvar os dados alterados na camada Silver no formato delta</strong>      </li>
+<li><strong>Recuperar dados da bronze</strong></li>
+<li><strong>Adicionar dados extras e metadados</strong></li>
+<li><strong>Ajustar estrutura, campos, nomes, da tebala e colunas</strong></li>
+<li><strong>Salvar os dados alterados na camada Silver no formato delta</strong></li>
 <li><strong><a href="https://github.com/KauaGrathwohl/projeto-final-engenharia-dados-satc/blob/master/notebooks/camadas/3-silver.ipynb">Código para referência</a></strong></li>
 </ol>
 <h4 id="4-camada-gold"><strong>4. Camada Gold</strong></h4>
-<p>A camada gold é onde os dados finais e prontos para consumo são armazenados. Esta camada é usada para armazenar dados que estão prontos para serem usados em relatórios e dashboards. </p>
+<p>A camada gold é onde os dados finais e prontos para consumo são armazenados. Esta camada é usada para armazenar dados que estão prontos para serem usados em relatórios e dashboards.</p>
 <p>Nela os dados são tratados e convertidos para um uso expecifico, no nosso caso passar para um modelo dimensional para analise em um dashboard do power BI</p>
 <ol>
-<li><strong>Recuperar dados do silver</strong>   </li>
-<li><strong>Filtrar e converter para o modelo desejado</strong>  </li>
-<li><strong>Salvar em na camada gold em formato delta</strong>   </li>
+<li><strong>Recuperar dados do silver</strong></li>
+<li><strong>Filtrar e converter para o modelo desejado</strong></li>
+<li><strong>Salvar em na camada gold em formato delta</strong></li>
 <li><strong><a href="https://github.com/KauaGrathwohl/projeto-final-engenharia-dados-satc/blob/master/notebooks/camadas/4-gold.ipynb">Código para referência</a></strong></li>
 </ol>
 <h3 id="organizacao-do-workflow-via-databricks"><span style="color: #48c;"><strong>Organização do Workflow via Databricks</strong></span></h3>
 <p>Databricks é uma plataforma de análise de dados que facilita a criação e a gestão de pipelines de dados. Abaixo está como foi organizado o workflow usando Databricks.</p>
 <ol>
 <li><strong>Definir um cluster para rodar o workflow</strong></li>
-<li><strong>Adicionar em ordem as camadas landing, bronze, silver e gold</strong>      </li>
-<li><strong>Definir um schedule de execução (nenhum definido para o projeto)</strong>   </li>
-<li><strong>Finalizar a criação do workflow</strong>   </li>
-<li><strong><a href="https://github.com/KauaGrathwohl/projeto-final-engenharia-dados-satc/blob/master/notebooks/workflow/etl-pipeline.yml">Código para referência</a></strong> </li>
+<li><strong>Adicionar em ordem as camadas landing, bronze, silver e gold</strong></li>
+<li><strong>Definir um schedule de execução (nenhum definido para o projeto)</strong></li>
+<li><strong>Finalizar a criação do workflow</strong></li>
+<li><strong><a href="https://github.com/KauaGrathwohl/projeto-final-engenharia-dados-satc/blob/master/notebooks/workflow/etl-pipeline.yml">Código para referência</a></strong></li>
 </ol>
 <p>Depois desse processo bastar executar ou esperar ser executado caso tenha um schedule</p>
 <h3 id="conclusao"><span style="color: #48c;"><strong>Conclusão</strong></span></h3>
