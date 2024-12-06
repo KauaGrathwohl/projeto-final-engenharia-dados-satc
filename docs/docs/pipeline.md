@@ -27,7 +27,7 @@ Para essa camada são acessados os dados do banco de dados sequencial (SQL Serve
 1. **Conectar no SQL server**  
 2. **Realizar um query para saber quantas tabelas existem no database**    
 3. **Para cada tabela recuperar os seus conteudos e salvar em csv na camada landing**  
-[Codigo de referencia](https://github.com/KauaGrathwohl/projeto-final-engenharia-dados-satc/blob/master/notebooks/camadas/1-landing.ipynb)
+4. **[Código para referência](https://github.com/KauaGrathwohl/projeto-final-engenharia-dados-satc/blob/master/notebooks/camadas/1-landing.ipynb)**
 
 #### **2. Camada Bronze**
 
@@ -38,7 +38,7 @@ Nela Recuperamos os dados salvos na camada landing em csv adicionamos metadados 
 1. **Recuperar os dados da landing**       
 2. **Adicionar dados extras e metadados**      
 3. **Salvar na camada Bronze em formato delta table**  
-[Codigo de referencia](https://github.com/KauaGrathwohl/projeto-final-engenharia-dados-satc/blob/master/notebooks/camadas/2-bronze.ipynb)
+4. **[Código para referência](https://github.com/KauaGrathwohl/projeto-final-engenharia-dados-satc/blob/master/notebooks/camadas/2-bronze.ipynb)**
 
 #### **3. Camada Silver**
 
@@ -50,7 +50,7 @@ Nela ajustamos os dados pra qualquer trabalho futuro, ajustando incoerencias e d
 2. **Adicionar dados extras e metadados**       
 3. **Ajustar estrutura, campos, nomes, da tebala e colunas**    
 4. **Salvar os dados alterados na camada Silver no formato delta**      
-[Codigo de referencia](https://github.com/KauaGrathwohl/projeto-final-engenharia-dados-satc/blob/master/notebooks/camadas/3-silver.ipynb)
+5. **[Código para referência](https://github.com/KauaGrathwohl/projeto-final-engenharia-dados-satc/blob/master/notebooks/camadas/3-silver.ipynb)**
 
 #### **4. Camada Gold**
 
@@ -61,7 +61,7 @@ Nela os dados são tratados e convertidos para um uso expecifico, no nosso caso 
 1. **Recuperar dados do silver**   
 2. **Filtrar e converter para o modelo desejado**  
 3. **Salvar em na camada gold em formato delta**   
-[Codigo de referencia](https://github.com/KauaGrathwohl/projeto-final-engenharia-dados-satc/blob/master/notebooks/camadas/4-gold.ipynb)
+4. **[Código para referência](https://github.com/KauaGrathwohl/projeto-final-engenharia-dados-satc/blob/master/notebooks/camadas/4-gold.ipynb)**
 
 
 ### <span style="color: #48c;">**Organização do Workflow via Databricks**</span>
@@ -72,7 +72,7 @@ Databricks é uma plataforma de análise de dados que facilita a criação e a g
 2. **Adicionar em ordem as camadas landing, bronze, silver e gold**      
 3. **Definir um schedule de execução (nenhum definido para o projeto)**   
 4. **Finalizar a criação do workflow**   
-[Codigo referencia](https://github.com/KauaGrathwohl/projeto-final-engenharia-dados-satc/blob/master/notebooks/workflow/etl-pipeline.yml)
+5. **[Código para referência](https://github.com/KauaGrathwohl/projeto-final-engenharia-dados-satc/blob/master/notebooks/workflow/etl-pipeline.yml)** 
 
 Depois desse processo bastar executar ou esperar ser executado caso tenha um schedule
 
