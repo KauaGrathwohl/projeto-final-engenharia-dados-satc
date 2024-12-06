@@ -17,14 +17,56 @@
 #### **Estrutura do Projeto**
 
 ```
-  css
-  data
-  docs
-  iac
-  notebooks
-  powerbi
-  gitignore
-  LICENSE.md
-  README.md
-  requirements.txt
+├─ .gitignore
+├─ LICENSE.md
+├─ README.md
+├─ css
+│  └─ extra.css
+├─ data
+│  └─ raw
+│     ├─ dump.sql
+│     ├─ sakila-data.sql
+│     ├─ sakila-schema.sql
+│     └─ schema.sql
+├─ desenho_arquitetura.excalidraw
+├─ desenho_arquitetura.png
+├─ docs
+│  ├─ docs
+│  │  ├─ index.md
+│  │  ├─ pipeline.md
+│  │  └─ projeto.md
+│  └─ mkdocs.yml
+├─ iac
+│  ├─ .gitignore
+│  ├─ adls
+│  │  ├─ .terraform.lock.hcl
+│  │  ├─ main.tf
+│  │  ├─ output.tf
+│  │  ├─ provider.tf
+│  │  └─ variables.tf
+│  ├─ databricks
+│  │  ├─ .terraform.lock.hcl
+│  │  ├─ main.tf
+│  │  ├─ output.tf
+│  │  ├─ provider.tf
+│  │  └─ variables.tf
+│  └─ sqlserver
+│     ├─ .terraform.lock.hcl
+│     ├─ main.tf
+│     ├─ outputs.tf
+│     ├─ providers.tf
+│     └─ variables.tf
+├─ notebooks
+│  ├─ camadas
+│  │  ├─ 1-landing.ipynb
+│  │  ├─ 2-bronze.ipynb
+│  │  ├─ 3-silver.ipynb
+│  │  ├─ 4-gold.ipynb
+│  │  ├─ all.py
+│  │  └─ env.ipynb
+│  └─ gerador
+│     ├─ .python-version
+│     ├─ gerador.py
+│     └─ requirements.txt
+└─ requirements.txt
 ```
